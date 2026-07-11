@@ -86,5 +86,33 @@ Car-Dealership/
 
 ---
 
+## MongoDB Configuration
+
+The application is configured to connect to MongoDB using the `SPRING_DATA_MONGODB_URI` environment variable, falling back to local MongoDB by default:
+- **Local MongoDB**: `mongodb://localhost:27017/dealership`
+- **Atlas MongoDB**: Set the `SPRING_DATA_MONGODB_URI` environment variable to your connection string.
+
+### Running MongoDB Locally
+We have provided a Docker Compose setup for local development. To start the local MongoDB and Mongo Express dashboard:
+```bash
+docker compose up -d
+```
+- MongoDB URL: `mongodb://localhost:27017`
+- Mongo Express GUI: `http://localhost:8081`
+
+To stop the services:
+```bash
+docker compose down
+```
+
+---
+
 ## AI Usage & Design Decisions
-To be updated dynamically throughout development.
+### Step 1: Project Setup
+- **AI Assisted Files**: `backend/pom.xml`, `backend/src/main/java/com/incubyte/dealership/DealershipApplication.java`, `frontend/vite.config.js`, `frontend/src/App.jsx`, `frontend/src/index.css`.
+- **Design Decision**: Initialized clean backend Spring Boot 3 structure and React Vite frontend with Tailwind v4 `@tailwindcss/vite` plugin for optimized CSS compilation.
+
+### Step 2: MongoDB Configuration
+- **AI Assisted Files**: `docker-compose.yml`, `backend/src/main/resources/application.yml`, `backend/src/test/java/com/incubyte/dealership/DealershipApplicationTests.java`.
+- **Design Decision**: Bypassed live MongoDB dependency for integration testing by injecting a `@MockBean MongoClient` in context configuration. This ensures that context loading tests execute successfully without requiring a running database server on development machines, while keeping environment-driven Atlas config intact for deployments.
+
