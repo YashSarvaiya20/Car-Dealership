@@ -171,3 +171,8 @@ docker compose down
 - **AI Assisted Files**: `backend/src/main/java/com/incubyte/dealership/service/VehicleService.java`, `backend/src/main/java/com/incubyte/dealership/security/SecurityConfig.java`.
 - **Design Decision**: Implemented state verification and quantity decrement logic within the service layer. Configured secure endpoint path matching matching exactly one dynamic identifier segment (`/api/vehicles/*/purchase`) to keep from using invalid Ant wildcards in Spring Boot 3 configurations.
 
+### Step 17: React Frontend Setup & Pages
+- **AI Assisted Files**: `frontend/vite.config.js`, `frontend/src/api/client.js`, `frontend/src/context/AuthContext.jsx`, `frontend/src/components/Navbar.jsx`, `frontend/src/components/Toast.jsx`, `frontend/src/pages/Login.jsx`, `frontend/src/pages/Register.jsx`, `frontend/src/pages/Dashboard.jsx`, `frontend/src/pages/AdminPanel.jsx`, `frontend/src/App.jsx`.
+- **Design Decision**: Implemented a complete SPA client using React 19, Tailwind CSS v4, and React Router v7. Set up Vite dev-server proxies mapping API queries to `http://localhost:8080` to prevent CORS issues. Configured an Axios client interceptor to attach dynamic bearer JWT headers to all outbound requests. Created `AuthContext` to persist active sessions and credentials in `localStorage` across reloads. Designed a catalog dashboard with sidebar filters and purchase triggers, a user sign-up/sign-in view, and an administrator panel with form validators and role blocks.
+
+
