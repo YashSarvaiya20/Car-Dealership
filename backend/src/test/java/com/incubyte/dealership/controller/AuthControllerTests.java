@@ -1,10 +1,13 @@
 package com.incubyte.dealership.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.incubyte.dealership.dto.request.LoginRequest;
 import com.incubyte.dealership.dto.request.RegisterRequest;
+import com.incubyte.dealership.dto.response.LoginResponse;
 import com.incubyte.dealership.dto.response.UserResponse;
 import com.incubyte.dealership.entity.Role;
 import com.incubyte.dealership.exception.DuplicateEmailException;
+import org.springframework.security.authentication.BadCredentialsException;
 import com.incubyte.dealership.service.AuthService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,5 +115,75 @@ class AuthControllerTests {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.error").value("Conflict"))
                 .andExpect(jsonPath("$.message").value("Email already exists"));
+    }
+
+    @Test
+    @WithMockUser
+    void login_ShouldReturnOk_WhenCredentialsAreValid() throws Exception {
+        // Arrange
+        LoginRequest request = LoginRequest.builder()
+                .email("john@example.com")
+                .password("password123")
+                .build();
+
+        LoginResponse response = LoginResponse.builder()
+                .token("mock-jwt-token")
+                .email("john@example.com")
+                .role(Role.USER)
+                .build();
+
+        when(authService.login(any(LoginRequest.class))).thenReturn(response);
+
+        // Act & Assert
+        mockMvc.perform(post("/api/auth/login")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").value("mock-jwt-token"))
+                .andExpect(jsonPath("$.email").value("john@example.com"))
+                .andExpect(jsonPath("$.role").value("USER"));
+    }
+
+    @Test
+    @WithMockUser
+    void login_ShouldReturnBadRequest_WhenEmailIsInvalid() throws Exception {
+        // Arrange
+        LoginRequest request = LoginRequest.builder()
+                .email("invalid-email")
+                .password("password123")
+                .build();
+
+        // Act & Assert
+        mockMvc.perform(post("/api/auth/login")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("Validation failed"))
+                .andExpect(jsonPath("$.details[0]").value("Invalid email format"));
+    }
+
+    @Test
+    @WithMockUser
+    void login_ShouldReturnUnauthorized_WhenCredentialsAreWrong() throws Exception {
+        // Arrange
+        LoginRequest request = LoginRequest.builder()
+                .email("john@example.com")
+                .password("wrongpassword")
+                .build();
+
+        when(authService.login(any(LoginRequest.class)))
+                .thenThrow(new BadCredentialsException("Invalid email or password"));
+
+        // Act & Assert
+        mockMvc.perform(post("/api/auth/login")
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isUnauthorized())
+                .andExpect(jsonPath("$.error").value("Unauthorized"))
+                .andExpect(jsonPath("$.message").value("Invalid email or password"));
     }
 }

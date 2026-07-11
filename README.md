@@ -131,3 +131,8 @@ docker compose down
 - **AI Assisted Files**: `backend/src/main/java/com/incubyte/dealership/service/AuthService.java`.
 - **Design Decision**: Implemented registration business logic, validating email uniqueness through the repository before mapping request models to `User` entities. Cryptographically hashed plain-text passwords using the configured `PasswordEncoder` bean to prevent storage of raw passwords in the database. Assumed the default user registration assigns the `Role.USER` privilege. Performed manual DTO mapping to construct `UserResponse` objects securely without exposing passwords. Satisfied constructor dependencies inside `DealershipApplicationTests` by injecting a `@MockBean UserRepository`.
 
+### Step 7: Login Tests
+- **AI Assisted Files**: `backend/src/main/java/com/incubyte/dealership/dto/request/LoginRequest.java`, `backend/src/main/java/com/incubyte/dealership/dto/response/LoginResponse.java`, `backend/src/main/java/com/incubyte/dealership/exception/GlobalExceptionHandler.java`, `backend/src/test/java/com/incubyte/dealership/service/AuthServiceTests.java`, `backend/src/test/java/com/incubyte/dealership/controller/AuthControllerTests.java`.
+- **Design Decision**: Declared DTO stubs and method skeletons for the login flow. Created unit tests in `AuthServiceTests` to check password matches via the password encoder and user retrievals from database records. Wrote slice tests in `AuthControllerTests` to verify validation error handling (HTTP 400), authentication failures (HTTP 401), and successful token structures (HTTP 200). Added a generic `AuthenticationException` handler in `GlobalExceptionHandler` to enforce consistent REST mapping for standard security exceptions.
+
+

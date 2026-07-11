@@ -1,6 +1,8 @@
 package com.incubyte.dealership.service;
 
+import com.incubyte.dealership.dto.request.LoginRequest;
 import com.incubyte.dealership.dto.request.RegisterRequest;
+import com.incubyte.dealership.dto.response.LoginResponse;
 import com.incubyte.dealership.dto.response.UserResponse;
 import com.incubyte.dealership.entity.Role;
 import com.incubyte.dealership.entity.User;
@@ -42,5 +44,9 @@ public class AuthService {
                 .email(savedUser.getEmail())
                 .role(savedUser.getRole())
                 .build();
+    }
+
+    public LoginResponse login(LoginRequest request) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 }

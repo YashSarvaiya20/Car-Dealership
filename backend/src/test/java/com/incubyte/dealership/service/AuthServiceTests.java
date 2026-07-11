@@ -1,7 +1,11 @@
 package com.incubyte.dealership.service;
 
+import com.incubyte.dealership.dto.request.LoginRequest;
 import com.incubyte.dealership.dto.request.RegisterRequest;
+import com.incubyte.dealership.dto.response.LoginResponse;
 import com.incubyte.dealership.dto.response.UserResponse;
+import org.springframework.security.authentication.BadCredentialsException;
+import java.util.Optional;
 import com.incubyte.dealership.entity.Role;
 import com.incubyte.dealership.entity.User;
 import com.incubyte.dealership.exception.DuplicateEmailException;
@@ -86,5 +90,80 @@ class AuthServiceTests {
 
         verify(userRepository).existsByEmail("john@example.com");
         verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void login_ShouldAuthenticateSuccessfully_WhenPasswordAndEmailMatch() {
+        // Arrange
+        LoginRequest request = LoginRequest.builder()
+                .email("john@example.com")
+                .password("plainPassword")
+                .build();
+
+        User user = User.builder()
+                .id("some-id")
+                .name("John Doe")
+                .email("john@example.com")
+                .password("hashedPassword")
+                .role(Role.USER)
+                .build();
+
+        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("plainPassword", "hashedPassword")).thenReturn(true);
+
+        // Act
+        LoginResponse response = authService.login(request);
+
+        // Assert
+        assertNotNull(response);
+        assertEquals("john@example.com", response.getEmail());
+        assertEquals(Role.USER, response.getRole());
+        assertNotNull(response.getToken());
+
+        verify(userRepository).findByEmail("john@example.com");
+        verify(passwordEncoder).matches("plainPassword", "hashedPassword");
+    }
+
+    @Test
+    void login_ShouldThrowBadCredentialsException_WhenEmailNotFound() {
+        // Arrange
+        LoginRequest request = LoginRequest.builder()
+                .email("notfound@example.com")
+                .password("plainPassword")
+                .build();
+
+        when(userRepository.findByEmail("notfound@example.com")).thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(BadCredentialsException.class, () -> authService.login(request));
+
+        verify(userRepository).findByEmail("notfound@example.com");
+        verify(passwordEncoder, never()).matches(anyString(), anyString());
+    }
+
+    @Test
+    void login_ShouldThrowBadCredentialsException_WhenPasswordDoesNotMatch() {
+        // Arrange
+        LoginRequest request = LoginRequest.builder()
+                .email("john@example.com")
+                .password("wrongPassword")
+                .build();
+
+        User user = User.builder()
+                .id("some-id")
+                .name("John Doe")
+                .email("john@example.com")
+                .password("hashedPassword")
+                .role(Role.USER)
+                .build();
+
+        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("wrongPassword", "hashedPassword")).thenReturn(false);
+
+        // Act & Assert
+        assertThrows(BadCredentialsException.class, () -> authService.login(request));
+
+        verify(userRepository).findByEmail("john@example.com");
+        verify(passwordEncoder).matches("wrongPassword", "hashedPassword");
     }
 }
