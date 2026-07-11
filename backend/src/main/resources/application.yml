@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: dealership
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/dealership
+  security:
+    user:
+      name: user
+      password: password
