@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfigurat
 import org.springframework.boot.autoconfigure.data.mongo.MongoRepositoriesAutoConfiguration;
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import com.incubyte.dealership.repository.UserRepository;
 
 @SpringBootTest
 @EnableAutoConfiguration(exclude = {
@@ -15,8 +17,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 })
 class DealershipApplicationTests {
 
+	@MockBean
+	private UserRepository userRepository;
+
 	@Test
 	void contextLoads() {
 	}
 
 }
+
