@@ -119,5 +119,6 @@ docker compose down
 ### Step 3: Security Configuration
 - **AI Assisted Files**: `backend/src/main/java/com/incubyte/dealership/security/SecurityConfig.java`.
 - **Design Decision**: Set up stateless session management and disabled CSRF, which is standard for decoupled JWT-based Single Page Applications. Configured endpoint authorization rules where authentication endpoints (`/api/auth/**`) and vehicle search/read endpoints (`GET /api/vehicles/**`) are publicly permitted, while write/transaction endpoints are restricted. Decoupled password encryption configuration into a reusable `BCryptPasswordEncoder` bean.
-
-
+### Step 4: User Entity
+- **AI Assisted Files**: `backend/src/main/resources/application.yml`, `backend/src/main/java/com/incubyte/dealership/entity/Role.java`, `backend/src/main/java/com/incubyte/dealership/entity/User.java`.
+- **Design Decision**: Created the `Role` enum to represent `USER` and `ADMIN` authorization roles in a type-safe manner. Configured the `User` entity to map to the `users` collection and utilized Lombok to minimize boilerplate. Enabled `spring.data.mongodb.auto-index-creation = true` to automatically register unique email indexes in MongoDB. In `DealershipApplicationTests`, we excluded MongoDB autoconfiguration classes so tests can boot cleanly without database dependencies.
