@@ -62,6 +62,15 @@ public class VehicleService {
         return responses;
     }
 
+    public List<VehicleResponse> searchVehicles(String make, String model, String category, Double minPrice, Double maxPrice, Integer minQuantity) {
+        List<Vehicle> vehicles = vehicleRepository.searchVehicles(make, model, category, minPrice, maxPrice, minQuantity);
+        List<VehicleResponse> responses = new ArrayList<>();
+        for (Vehicle v : vehicles) {
+            responses.add(mapToResponse(v));
+        }
+        return responses;
+    }
+
     private VehicleResponse mapToResponse(Vehicle vehicle) {
         return VehicleResponse.builder()
                 .id(vehicle.getId())

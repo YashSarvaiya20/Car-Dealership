@@ -126,4 +126,17 @@ class VehicleServiceTests {
         assertEquals("vehicle-id", responses.get(0).getId());
         verify(vehicleRepository).findAll();
     }
+
+    @Test
+    void searchVehicles_ShouldReturnList() {
+        when(vehicleRepository.searchVehicles("Toyota", "Camry", "Sedan", 10000.0, 40000.0, 1))
+                .thenReturn(java.util.Arrays.asList(vehicle));
+
+        List<VehicleResponse> responses = vehicleService.searchVehicles("Toyota", "Camry", "Sedan", 10000.0, 40000.0, 1);
+
+        assertNotNull(responses);
+        assertEquals(1, responses.size());
+        assertEquals("vehicle-id", responses.get(0).getId());
+        verify(vehicleRepository).searchVehicles("Toyota", "Camry", "Sedan", 10000.0, 40000.0, 1);
+    }
 }

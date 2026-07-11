@@ -196,4 +196,22 @@ class VehicleControllerTests {
 
         verify(vehicleService).getAllVehicles();
     }
+
+    @Test
+    void searchVehicles_ShouldReturnOk_WhenUserIsAnonymous() throws Exception {
+        when(vehicleService.searchVehicles("Toyota", "Camry", "Sedan", 10000.0, 40000.0, 1))
+                .thenReturn(Collections.singletonList(validResponse));
+
+        mockMvc.perform(get("/api/vehicles/search")
+                        .param("make", "Toyota")
+                        .param("model", "Camry")
+                        .param("category", "Sedan")
+                        .param("minPrice", "10000.0")
+                        .param("maxPrice", "40000.0")
+                        .param("minQuantity", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value("vehicle-id"));
+
+        verify(vehicleService).searchVehicles("Toyota", "Camry", "Sedan", 10000.0, 40000.0, 1);
+    }
 }

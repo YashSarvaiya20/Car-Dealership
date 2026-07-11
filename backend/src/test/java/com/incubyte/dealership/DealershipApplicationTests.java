@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import com.incubyte.dealership.repository.UserRepository;
 import com.incubyte.dealership.repository.VehicleRepository;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 @SpringBootTest
 @EnableAutoConfiguration(exclude = {
@@ -23,6 +24,9 @@ class DealershipApplicationTests {
 
 	@MockBean
 	private VehicleRepository vehicleRepository;
+
+	@MockBean
+	private MongoTemplate mongoTemplate;
 
 	@Test
 	void contextLoads() {
