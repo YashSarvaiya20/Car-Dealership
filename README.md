@@ -116,3 +116,8 @@ docker compose down
 - **AI Assisted Files**: `docker-compose.yml`, `backend/src/main/resources/application.yml`, `backend/src/test/java/com/incubyte/dealership/DealershipApplicationTests.java`.
 - **Design Decision**: Bypassed live MongoDB dependency for integration testing by injecting a `@MockBean MongoClient` in context configuration. This ensures that context loading tests execute successfully without requiring a running database server on development machines, while keeping environment-driven Atlas config intact for deployments.
 
+### Step 3: Security Configuration
+- **AI Assisted Files**: `backend/src/main/java/com/incubyte/dealership/security/SecurityConfig.java`.
+- **Design Decision**: Set up stateless session management and disabled CSRF, which is standard for decoupled JWT-based Single Page Applications. Configured endpoint authorization rules where authentication endpoints (`/api/auth/**`) and vehicle search/read endpoints (`GET /api/vehicles/**`) are publicly permitted, while write/transaction endpoints are restricted. Decoupled password encryption configuration into a reusable `BCryptPasswordEncoder` bean.
+
+
