@@ -4,6 +4,7 @@ import com.incubyte.dealership.dto.request.VehicleRequest;
 import com.incubyte.dealership.dto.response.VehicleResponse;
 import com.incubyte.dealership.entity.Vehicle;
 import com.incubyte.dealership.exception.ResourceNotFoundException;
+import com.incubyte.dealership.exception.InsufficientStockException;
 import com.incubyte.dealership.repository.VehicleRepository;
 import org.springframework.stereotype.Service;
 
@@ -69,6 +70,19 @@ public class VehicleService {
             responses.add(mapToResponse(v));
         }
         return responses;
+    }
+
+    public VehicleResponse purchaseVehicle(String id) {
+        Vehicle vehicle = vehicleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + id));
+
+        if (vehicle.getQuantity() <= 0) {
+            throw new InsufficientStockException("Vehicle is out of stock");
+        }
+
+        vehicle.setQuantity(vehicle.getQuantity() - 1);
+        Vehicle saved = vehicleRepository.save(vehicle);
+        return mapToResponse(saved);
     }
 
     private VehicleResponse mapToResponse(Vehicle vehicle) {

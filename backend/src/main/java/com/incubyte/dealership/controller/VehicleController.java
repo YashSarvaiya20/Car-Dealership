@@ -51,4 +51,9 @@ public class VehicleController {
             @RequestParam(required = false) Integer minQuantity) {
         return vehicleService.searchVehicles(make, model, category, minPrice, maxPrice, minQuantity);
     }
+
+    @PostMapping("/{id}/purchase")
+    public VehicleResponse purchaseVehicle(@PathVariable String id) {
+        return vehicleService.purchaseVehicle(id);
+    }
 }

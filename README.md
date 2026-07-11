@@ -162,3 +162,12 @@ docker compose down
 ### Step 14: Vehicle Search Implementation
 - **AI Assisted Files**: `backend/src/main/java/com/incubyte/dealership/repository/VehicleRepositoryCustomImpl.java`, `backend/src/main/java/com/incubyte/dealership/service/VehicleService.java`, `backend/src/test/java/com/incubyte/dealership/DealershipApplicationTests.java`.
 - **Design Decision**: Implemented dynamic inventory querying in `VehicleRepositoryCustomImpl` using `MongoTemplate` and regex-based criteria matching (case-insensitive partial matching for make/model, exact matching for category, and ranges for price and quantity). Route calls cleanly from `VehicleService` to the repository. Satisfied dependency scanning in `DealershipApplicationTests` by mocking `MongoTemplate`.
+
+### Step 15: Vehicle Purchase Tests
+- **AI Assisted Files**: `backend/src/main/java/com/incubyte/dealership/exception/InsufficientStockException.java`, `backend/src/main/java/com/incubyte/dealership/exception/GlobalExceptionHandler.java`, `backend/src/main/java/com/incubyte/dealership/service/VehicleService.java`, `backend/src/main/java/com/incubyte/dealership/controller/VehicleController.java`, `backend/src/main/java/com/incubyte/dealership/security/SecurityConfig.java`, `backend/src/test/java/com/incubyte/dealership/service/VehicleServiceTests.java`, `backend/src/test/java/com/incubyte/dealership/controller/VehicleControllerTests.java`.
+- **Design Decision**: Created a custom `InsufficientStockException` and mapped it to HTTP `400 Bad Request` in `GlobalExceptionHandler`. Declared skeletal `purchaseVehicle` method signature and controller mapping. Configured security filters to require standard authentication for purchasing actions. Wrote unit tests in `VehicleServiceTests` validating stock decrements, out-of-stock validation failures, and missing resource errors. Wrote MockMvc slice tests in `VehicleControllerTests` validating successful authenticated purchase execution and anonymous 401 response blocks.
+
+### Step 16: Vehicle Purchase Implementation
+- **AI Assisted Files**: `backend/src/main/java/com/incubyte/dealership/service/VehicleService.java`, `backend/src/main/java/com/incubyte/dealership/security/SecurityConfig.java`.
+- **Design Decision**: Implemented state verification and quantity decrement logic within the service layer. Configured secure endpoint path matching matching exactly one dynamic identifier segment (`/api/vehicles/*/purchase`) to keep from using invalid Ant wildcards in Spring Boot 3 configurations.
+

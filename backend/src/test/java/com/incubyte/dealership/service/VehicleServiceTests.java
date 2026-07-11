@@ -139,4 +139,40 @@ class VehicleServiceTests {
         assertEquals("vehicle-id", responses.get(0).getId());
         verify(vehicleRepository).searchVehicles("Toyota", "Camry", "Sedan", 10000.0, 40000.0, 1);
     }
+
+    @Test
+    void purchaseVehicle_ShouldDecrementQuantityByOne_WhenStockIsAvailable() {
+        when(vehicleRepository.findById("vehicle-id")).thenReturn(Optional.of(vehicle));
+        when(vehicleRepository.save(any(Vehicle.class))).thenReturn(vehicle);
+
+        VehicleResponse response = vehicleService.purchaseVehicle("vehicle-id");
+
+        assertNotNull(response);
+        assertEquals(4, vehicle.getQuantity()); // decremented from 5 to 4
+        verify(vehicleRepository).findById("vehicle-id");
+        verify(vehicleRepository).save(vehicle);
+    }
+
+    @Test
+    void purchaseVehicle_ShouldThrowInsufficientStockException_WhenStockIsZero() {
+        vehicle.setQuantity(0);
+        when(vehicleRepository.findById("vehicle-id")).thenReturn(Optional.of(vehicle));
+
+        assertThrows(com.incubyte.dealership.exception.InsufficientStockException.class, () ->
+                vehicleService.purchaseVehicle("vehicle-id"));
+
+        verify(vehicleRepository).findById("vehicle-id");
+        verify(vehicleRepository, never()).save(any(Vehicle.class));
+    }
+
+    @Test
+    void purchaseVehicle_ShouldThrowResourceNotFoundException_WhenVehicleDoesNotExist() {
+        when(vehicleRepository.findById("non-existent")).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () ->
+                vehicleService.purchaseVehicle("non-existent"));
+
+        verify(vehicleRepository).findById("non-existent");
+        verify(vehicleRepository, never()).save(any(Vehicle.class));
+    }
 }

@@ -214,4 +214,26 @@ class VehicleControllerTests {
 
         verify(vehicleService).searchVehicles("Toyota", "Camry", "Sedan", 10000.0, 40000.0, 1);
     }
+
+    @Test
+    @WithMockUser(username = "user@example.com", roles = {"USER"})
+    void purchaseVehicle_ShouldReturnOk_WhenUserIsAuthenticated() throws Exception {
+        when(vehicleService.purchaseVehicle("vehicle-id")).thenReturn(validResponse);
+
+        mockMvc.perform(post("/api/vehicles/vehicle-id/purchase")
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value("vehicle-id"));
+
+        verify(vehicleService).purchaseVehicle("vehicle-id");
+    }
+
+    @Test
+    void purchaseVehicle_ShouldReturnUnauthorized_WhenUserIsAnonymous() throws Exception {
+        mockMvc.perform(post("/api/vehicles/vehicle-id/purchase")
+                        .with(csrf()))
+                .andExpect(status().isUnauthorized());
+
+        verify(vehicleService, never()).purchaseVehicle(anyString());
+    }
 }
