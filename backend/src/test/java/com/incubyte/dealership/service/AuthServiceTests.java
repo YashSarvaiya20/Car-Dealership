@@ -10,6 +10,7 @@ import com.incubyte.dealership.entity.Role;
 import com.incubyte.dealership.entity.User;
 import com.incubyte.dealership.exception.DuplicateEmailException;
 import com.incubyte.dealership.repository.UserRepository;
+import com.incubyte.dealership.security.JwtUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,6 +30,9 @@ class AuthServiceTests {
 
     @Mock
     private PasswordEncoder passwordEncoder;
+
+    @Mock
+    private JwtUtil jwtUtil;
 
     @InjectMocks
     private AuthService authService;
@@ -110,6 +114,7 @@ class AuthServiceTests {
 
         when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("plainPassword", "hashedPassword")).thenReturn(true);
+        when(jwtUtil.generateToken("john@example.com", Role.USER)).thenReturn("mock-jwt-token");
 
         // Act
         LoginResponse response = authService.login(request);

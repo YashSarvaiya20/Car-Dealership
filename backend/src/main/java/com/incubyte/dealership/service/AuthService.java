@@ -8,6 +8,7 @@ import com.incubyte.dealership.entity.Role;
 import com.incubyte.dealership.entity.User;
 import com.incubyte.dealership.exception.DuplicateEmailException;
 import com.incubyte.dealership.repository.UserRepository;
+import com.incubyte.dealership.security.JwtUtil;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,12 @@ public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
-    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
     public UserResponse register(RegisterRequest request) {
@@ -55,8 +58,10 @@ public class AuthService {
             throw new BadCredentialsException("Invalid email or password");
         }
 
+        String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
+
         return LoginResponse.builder()
-                .token("mock-jwt-token")
+                .token(token)
                 .email(user.getEmail())
                 .role(user.getRole())
                 .build();

@@ -8,6 +8,9 @@ import com.incubyte.dealership.dto.response.UserResponse;
 import com.incubyte.dealership.entity.Role;
 import com.incubyte.dealership.exception.DuplicateEmailException;
 import org.springframework.security.authentication.BadCredentialsException;
+import com.incubyte.dealership.security.JwtFilter;
+import com.incubyte.dealership.security.JwtUtil;
+import com.incubyte.dealership.security.CustomUserDetailsService;
 import com.incubyte.dealership.service.AuthService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,12 @@ class AuthControllerTests {
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    private JwtUtil jwtUtil;
+
+    @MockBean
+    private CustomUserDetailsService customUserDetailsService;
 
     @MockBean
     private AuthService authService;
