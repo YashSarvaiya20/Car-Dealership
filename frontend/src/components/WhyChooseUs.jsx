@@ -33,7 +33,7 @@ export default function WhyChooseUs() {
       <div className="mx-auto max-w-7xl px-6">
         <div className="text-center max-w-xl mx-auto mb-16 space-y-3">
           <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">Why Choose Us</h2>
-          <p className="text-xs text-slate-400">Discover what sets Incubyte Motors apart as the premier automotive marketplace</p>
+          <p className="text-xs text-slate-400">Discover what sets DriveSphere apart as the premier automotive marketplace</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">

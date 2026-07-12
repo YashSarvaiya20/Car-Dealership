@@ -1,9 +1,9 @@
-# Car Dealership Inventory Management System
+# DriveSphere - Premium Car Marketplace & Inventory Management System
 
-A full-stack Car Dealership Inventory Management System built with Spring Boot (Java 17) and React (Vite + Tailwind CSS), utilizing MongoDB as the primary database.
+A full-stack car dealership inventory management and purchase platform built with Spring Boot (Java 17) and React (Vite + Tailwind CSS), utilizing MongoDB as the primary database.
 
 ## Project Overview
-This application provides functionalities for car inventory management, secure user registration and login, roles-based authorization (User/Admin), searching vehicles, and processing vehicle transactions (purchasing and restocking).
+This application provides functionalities for elite car inventory management, secure user registration and login under the **DriveSphere** ecosystem, strict roles-based authorization (User/Admin), dynamic vehicle filtering, and transaction operations (purchasing and restocking).
 
 ## Tech Stack
 ### Backend
@@ -184,3 +184,24 @@ docker compose down
 ### Step 20: Role-Based Authorization Correction
 - **AI Assisted Files**: `frontend/src/context/AuthContext.jsx`, `frontend/src/components/Navbar.jsx`.
 - **Design Decision**: Corrected JWT claim parsing by mapping the singular `role` claim to the user state instead of checking `roles`. Configured `isAdmin` to match both `ADMIN` and `ROLE_ADMIN` conventions to resolve access restrictions for system administrators. Replaced hardcoded text in the navbar user badge to display the dynamic role parameter.
+
+---
+
+## Project Screenshots
+
+Here are some visual previews of the **DriveSphere** premium application showcase:
+
+### 1. Welcome to DriveSphere (Hero Section)
+![DriveSphere Hero Section](screenshots/screenshot_hero.png)
+
+### 2. Premium Vehicle Categories
+![DriveSphere Categories](screenshots/screenshot_categories.png)
+
+### 3. Catalog Inventory Showcase
+![DriveSphere Inventory Grid](screenshots/screenshot_featured.png)
+
+### 4. Create Account (Registration Panel)
+![DriveSphere Register Page](screenshots/screenshot_register.png)
+
+### 5. Sign In Form (Authentication Panel)
+![DriveSphere Login Page](screenshots/screenshot_login.png)

@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="space-y-4">
           <Link to="/" className="flex items-center gap-2">
             <span className="text-lg font-black text-white tracking-tight">
-              🚗 Incubyte Motors
+              🚗 DriveSphere
             </span>
           </Link>
           <p className="text-xs text-slate-400 leading-relaxed">
@@ -73,7 +73,7 @@ export default function Footer() {
       </div>
 
       <div className="mx-auto max-w-7xl px-6 mt-8 pt-6 border-t border-slate-850 text-center text-[10px] text-slate-500">
-        &copy; {new Date().getFullYear()} Incubyte Motors. All rights reserved. Built with pride.
+        &copy; {new Date().getFullYear()} DriveSphere. All rights reserved. Built with pride.
       </div>
     </footer>
   );

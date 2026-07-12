@@ -36,7 +36,7 @@ export default function Navbar() {
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2">
               <span className="text-lg font-black text-white tracking-tight">
-                🚗 Incubyte Motors
+                🚗 DriveSphere
               </span>
             </Link>
             

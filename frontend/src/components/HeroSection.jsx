@@ -23,7 +23,7 @@ export default function HeroSection() {
       <div className="relative z-10 mx-auto max-w-7xl px-6 text-center sm:text-left w-full space-y-8">
         <div className="max-w-2xl space-y-6">
           <span className="inline-block px-3 py-1 bg-blue-500/10 border border-blue-500/20 rounded-full text-[10px] font-bold uppercase tracking-widest text-blue-400">
-            Welcome to Incubyte Motors
+            Welcome to DriveSphere
           </span>
           <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight leading-none">
             Drive Your <span className="text-blue-500">Dream Car</span> Today
