@@ -197,11 +197,20 @@ Here are some visual previews of the **DriveSphere** premium application showcas
 ### 2. Premium Vehicle Categories
 ![DriveSphere Categories](screenshots/screenshot_categories.png)
 
-### 3. Catalog Inventory Showcase
-![DriveSphere Inventory Grid](screenshots/screenshot_featured.png)
+### 3. Cars Catalog Page (Customer Dashboard)
+![DriveSphere Catalog Page](screenshots/screenshot_catalog.png)
 
-### 4. Create Account (Registration Panel)
+### 4. Dynamic Filter Search (Search Feature)
+![DriveSphere Dynamic Filters](screenshots/screenshot_filter.png)
+
+### 5. Inventory Management List (Admin Control Panel)
+![DriveSphere Admin Inventory List](screenshots/screenshot_admin_list.png)
+
+### 6. Add & Edit Car Form (Admin Panel Details)
+![DriveSphere Admin Car Form](screenshots/screenshot_admin_edit.png)
+
+### 7. Create Account (Registration Panel)
 ![DriveSphere Register Page](screenshots/screenshot_register.png)
 
-### 5. Sign In Form (Authentication Panel)
+### 8. Sign In Form (Authentication Panel)
 ![DriveSphere Login Page](screenshots/screenshot_login.png)
