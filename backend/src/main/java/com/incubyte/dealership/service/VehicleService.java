@@ -7,6 +7,7 @@ import com.incubyte.dealership.exception.ResourceNotFoundException;
 import com.incubyte.dealership.exception.InsufficientStockException;
 import com.incubyte.dealership.repository.VehicleRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,18 +16,30 @@ import java.util.List;
 public class VehicleService {
 
     private final VehicleRepository vehicleRepository;
+    private final ImageService imageService;
 
-    public VehicleService(VehicleRepository vehicleRepository) {
+    public VehicleService(VehicleRepository vehicleRepository, ImageService imageService) {
         this.vehicleRepository = vehicleRepository;
+        this.imageService = imageService;
     }
 
     public VehicleResponse createVehicle(VehicleRequest request) {
+        return createVehicle(request, null);
+    }
+
+    public VehicleResponse createVehicle(VehicleRequest request, MultipartFile image) {
+        String imageUrl = null;
+        if (image != null) {
+            imageUrl = imageService.saveImage(image);
+        }
+
         Vehicle vehicle = Vehicle.builder()
                 .make(request.getMake())
                 .model(request.getModel())
                 .category(request.getCategory())
                 .price(request.getPrice())
                 .quantity(request.getQuantity())
+                .imageUrl(imageUrl)
                 .build();
 
         Vehicle saved = vehicleRepository.save(vehicle);
@@ -34,8 +47,20 @@ public class VehicleService {
     }
 
     public VehicleResponse updateVehicle(String id, VehicleRequest request) {
+        return updateVehicle(id, request, null);
+    }
+
+    public VehicleResponse updateVehicle(String id, VehicleRequest request, MultipartFile image) {
         Vehicle vehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + id));
+
+        if (image != null && !image.isEmpty()) {
+            if (vehicle.getImageUrl() != null) {
+                imageService.deleteImage(vehicle.getImageUrl());
+            }
+            String imageUrl = imageService.saveImage(image);
+            vehicle.setImageUrl(imageUrl);
+        }
 
         vehicle.setMake(request.getMake());
         vehicle.setModel(request.getModel());
@@ -48,10 +73,14 @@ public class VehicleService {
     }
 
     public void deleteVehicle(String id) {
-        if (!vehicleRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Vehicle not found with id: " + id);
+        Vehicle vehicle = vehicleRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + id));
+
+        if (vehicle.getImageUrl() != null) {
+            imageService.deleteImage(vehicle.getImageUrl());
         }
-        vehicleRepository.deleteById(id);
+
+        vehicleRepository.delete(vehicle);
     }
 
     public List<VehicleResponse> getAllVehicles() {
@@ -73,6 +102,16 @@ public class VehicleService {
     }
 
     public VehicleResponse purchaseVehicle(String id) {
+        org.springframework.security.core.Authentication authentication =
+                org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            boolean isAdmin = authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+            if (isAdmin) {
+                throw new org.springframework.security.access.AccessDeniedException("Administrators cannot purchase vehicles. Please use a customer account.");
+            }
+        }
+
         Vehicle vehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + id));
 
@@ -93,6 +132,7 @@ public class VehicleService {
                 .category(vehicle.getCategory())
                 .price(vehicle.getPrice())
                 .quantity(vehicle.getQuantity())
+                .imageUrl(vehicle.getImageUrl())
                 .build();
     }
 }

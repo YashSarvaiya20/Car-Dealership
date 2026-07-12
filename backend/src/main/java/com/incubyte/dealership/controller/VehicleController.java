@@ -5,7 +5,9 @@ import com.incubyte.dealership.dto.response.VehicleResponse;
 import com.incubyte.dealership.service.VehicleService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -19,15 +21,20 @@ public class VehicleController {
         this.vehicleService = vehicleService;
     }
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public VehicleResponse createVehicle(@Valid @RequestBody VehicleRequest request) {
-        return vehicleService.createVehicle(request);
+    public VehicleResponse createVehicle(
+            @ModelAttribute @Valid VehicleRequest request,
+            @RequestParam(value = "image", required = false) MultipartFile image) {
+        return vehicleService.createVehicle(request, image);
     }
 
-    @PutMapping("/{id}")
-    public VehicleResponse updateVehicle(@PathVariable String id, @Valid @RequestBody VehicleRequest request) {
-        return vehicleService.updateVehicle(id, request);
+    @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public VehicleResponse updateVehicle(
+            @PathVariable String id,
+            @ModelAttribute @Valid VehicleRequest request,
+            @RequestParam(value = "image", required = false) MultipartFile image) {
+        return vehicleService.updateVehicle(id, request, image);
     }
 
     @DeleteMapping("/{id}")

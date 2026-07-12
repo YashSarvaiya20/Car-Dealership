@@ -79,89 +79,101 @@ class VehicleControllerTests {
     @Test
     @WithMockUser(username = "admin@example.com", roles = {"ADMIN"})
     void createVehicle_ShouldReturnCreated_WhenUserIsAdminAndPayloadIsValid() throws Exception {
-        when(vehicleService.createVehicle(any(VehicleRequest.class))).thenReturn(validResponse);
+        when(vehicleService.createVehicle(any(VehicleRequest.class), any())).thenReturn(validResponse);
 
-        mockMvc.perform(post("/api/vehicles")
+        mockMvc.perform(multipart("/api/vehicles")
                         .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(validRequest)))
+                        .param("make", "Toyota")
+                        .param("model", "Camry")
+                        .param("category", "Sedan")
+                        .param("price", "30000.0")
+                        .param("quantity", "5"))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("vehicle-id"))
                 .andExpect(jsonPath("$.make").value("Toyota"));
 
-        verify(vehicleService).createVehicle(any(VehicleRequest.class));
+        verify(vehicleService).createVehicle(any(VehicleRequest.class), any());
     }
 
     @Test
     @WithMockUser(username = "user@example.com", roles = {"USER"})
     void createVehicle_ShouldReturnForbidden_WhenUserIsStandardUser() throws Exception {
-        mockMvc.perform(post("/api/vehicles")
+        mockMvc.perform(multipart("/api/vehicles")
                         .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(validRequest)))
+                        .param("make", "Toyota")
+                        .param("model", "Camry")
+                        .param("category", "Sedan")
+                        .param("price", "30000.0")
+                        .param("quantity", "5"))
                 .andExpect(status().isForbidden());
 
-        verify(vehicleService, never()).createVehicle(any(VehicleRequest.class));
+        verify(vehicleService, never()).createVehicle(any(VehicleRequest.class), any());
     }
 
     @Test
     void createVehicle_ShouldReturnUnauthorized_WhenUserIsAnonymous() throws Exception {
-        mockMvc.perform(post("/api/vehicles")
+        mockMvc.perform(multipart("/api/vehicles")
                         .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(validRequest)))
+                        .param("make", "Toyota")
+                        .param("model", "Camry")
+                        .param("category", "Sedan")
+                        .param("price", "30000.0")
+                        .param("quantity", "5"))
                 .andExpect(status().isUnauthorized());
 
-        verify(vehicleService, never()).createVehicle(any(VehicleRequest.class));
+        verify(vehicleService, never()).createVehicle(any(VehicleRequest.class), any());
     }
 
     @Test
     @WithMockUser(username = "admin@example.com", roles = {"ADMIN"})
     void createVehicle_ShouldReturnBadRequest_WhenPayloadIsInvalid() throws Exception {
-        VehicleRequest invalidRequest = VehicleRequest.builder()
-                .make("")
-                .model("Camry")
-                .category("Sedan")
-                .price(-10.0)
-                .quantity(-5)
-                .build();
-
-        mockMvc.perform(post("/api/vehicles")
+        mockMvc.perform(multipart("/api/vehicles")
                         .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(invalidRequest)))
+                        .param("make", "")
+                        .param("model", "Camry")
+                        .param("category", "Sedan")
+                        .param("price", "-10.0")
+                        .param("quantity", "-5"))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Validation failed"))
                 .andExpect(jsonPath("$.details").isArray());
 
-        verify(vehicleService, never()).createVehicle(any(VehicleRequest.class));
+        verify(vehicleService, never()).createVehicle(any(VehicleRequest.class), any());
     }
 
     @Test
     @WithMockUser(username = "admin@example.com", roles = {"ADMIN"})
     void updateVehicle_ShouldReturnOk_WhenUserIsAdminAndPayloadIsValid() throws Exception {
-        when(vehicleService.updateVehicle(eq("vehicle-id"), any(VehicleRequest.class))).thenReturn(validResponse);
+        when(vehicleService.updateVehicle(eq("vehicle-id"), any(VehicleRequest.class), any())).thenReturn(validResponse);
 
-        mockMvc.perform(put("/api/vehicles/vehicle-id")
+        mockMvc.perform(multipart("/api/vehicles/vehicle-id")
+                        .with(request -> { request.setMethod("PUT"); return request; })
                         .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(validRequest)))
+                        .param("make", "Toyota")
+                        .param("model", "Camry")
+                        .param("category", "Sedan")
+                        .param("price", "30000.0")
+                        .param("quantity", "5"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value("vehicle-id"));
 
-        verify(vehicleService).updateVehicle(eq("vehicle-id"), any(VehicleRequest.class));
+        verify(vehicleService).updateVehicle(eq("vehicle-id"), any(VehicleRequest.class), any());
     }
 
     @Test
     @WithMockUser(username = "user@example.com", roles = {"USER"})
     void updateVehicle_ShouldReturnForbidden_WhenUserIsStandardUser() throws Exception {
-        mockMvc.perform(put("/api/vehicles/vehicle-id")
+        mockMvc.perform(multipart("/api/vehicles/vehicle-id")
+                        .with(request -> { request.setMethod("PUT"); return request; })
                         .with(csrf())
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(validRequest)))
+                        .param("make", "Toyota")
+                        .param("model", "Camry")
+                        .param("category", "Sedan")
+                        .param("price", "30000.0")
+                        .param("quantity", "5"))
                 .andExpect(status().isForbidden());
 
-        verify(vehicleService, never()).updateVehicle(anyString(), any(VehicleRequest.class));
+        verify(vehicleService, never()).updateVehicle(anyString(), any(VehicleRequest.class), any());
     }
 
     @Test
@@ -235,5 +247,19 @@ class VehicleControllerTests {
                 .andExpect(status().isUnauthorized());
 
         verify(vehicleService, never()).purchaseVehicle(anyString());
+    }
+
+    @Test
+    @WithMockUser(username = "admin@example.com", roles = {"ADMIN"})
+    void purchaseVehicle_ShouldReturnForbidden_WhenUserIsAdmin() throws Exception {
+        when(vehicleService.purchaseVehicle("vehicle-id"))
+                .thenThrow(new org.springframework.security.access.AccessDeniedException("Administrators cannot purchase vehicles. Please use a customer account."));
+
+        mockMvc.perform(post("/api/vehicles/vehicle-id/purchase")
+                        .with(csrf()))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.message").value("Administrators cannot purchase vehicles. Please use a customer account."));
+
+        verify(vehicleService).purchaseVehicle("vehicle-id");
     }
 }

@@ -1,13 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import client from '../api/client';
 import Toast from '../components/Toast';
 
 export default function AdminPanel() {
-  const { user, loading: authLoading } = useAuth();
-  const navigate = useNavigate();
-
   const [vehicles, setVehicles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [toast, setToast] = useState(null);
@@ -20,17 +15,13 @@ export default function AdminPanel() {
   const [category, setCategory] = useState('Sedan');
   const [price, setPrice] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (!authLoading) {
-      if (!user || !user.isAdmin) {
-        navigate('/');
-      } else {
-        fetchVehicles();
-      }
-    }
-  }, [user, authLoading]);
+    fetchVehicles();
+  }, []);
 
   const fetchVehicles = async () => {
     setLoading(true);
@@ -60,6 +51,14 @@ export default function AdminPanel() {
       newErrors.quantity = 'Quantity must be 0 or greater';
     }
 
+    if (!editingId && !imageFile) {
+      newErrors.image = 'Vehicle image is required';
+    }
+
+    if (imageFile && imageFile.size > 5 * 1024 * 1024) {
+      newErrors.image = 'File size exceeds the limit of 5 MB';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -71,6 +70,8 @@ export default function AdminPanel() {
     setCategory('Sedan');
     setPrice('');
     setQuantity('');
+    setImageFile(null);
+    setImagePreview('');
     setErrors({});
     setIsOpen(true);
   };
@@ -82,6 +83,8 @@ export default function AdminPanel() {
     setCategory(v.category);
     setPrice(v.price.toString());
     setQuantity(v.quantity.toString());
+    setImageFile(null);
+    setImagePreview(v.imageUrl || '');
     setErrors({});
     setIsOpen(true);
   };
@@ -90,23 +93,31 @@ export default function AdminPanel() {
     e.preventDefault();
     if (!validateForm()) return;
 
-    const payload = {
-      make: make.trim(),
-      model: model.trim(),
-      category,
-      price: parseFloat(price),
-      quantity: parseInt(quantity),
+    const formData = new FormData();
+    formData.append('make', make.trim());
+    formData.append('model', model.trim());
+    formData.append('category', category);
+    formData.append('price', parseFloat(price));
+    formData.append('quantity', parseInt(quantity));
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     };
 
     try {
       if (editingId) {
-        const response = await client.put(`/api/vehicles/${editingId}`, payload);
+        const response = await client.put(`/api/vehicles/${editingId}`, formData, config);
         setVehicles((prev) =>
           prev.map((v) => (v.id === editingId ? response.data : v))
         );
         setToast({ message: 'Vehicle updated successfully!', type: 'success' });
       } else {
-        const response = await client.post('/api/vehicles', payload);
+        const response = await client.post('/api/vehicles', formData, config);
         setVehicles((prev) => [response.data, ...prev]);
         setToast({ message: 'Vehicle created successfully!', type: 'success' });
       }
@@ -132,13 +143,7 @@ export default function AdminPanel() {
     }
   };
 
-  if (authLoading || (!user || !user.isAdmin)) {
-    return (
-      <div className="flex items-center justify-center py-24 flex-grow">
-        <span className="w-8 h-8 border-4 border-slate-800 border-t-blue-500 rounded-full animate-spin"></span>
-      </div>
-    );
-  }
+  // Route parameters and authorization are managed by ProtectedRoute
 
   return (
     <div className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -169,6 +174,7 @@ export default function AdminPanel() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="border-b border-slate-800 bg-slate-950/40 text-slate-400 text-xs font-bold uppercase tracking-wider">
+                  <th className="px-6 py-4">Image</th>
                   <th className="px-6 py-4">Make & Model</th>
                   <th className="px-6 py-4">Category</th>
                   <th className="px-6 py-4">Price</th>
@@ -179,6 +185,19 @@ export default function AdminPanel() {
               <tbody className="divide-y divide-slate-800/60 text-slate-300 text-sm">
                 {vehicles.map((v) => (
                   <tr key={v.id} className="hover:bg-slate-850/40 transition-colors">
+                    <td className="px-6 py-4">
+                      {v.imageUrl ? (
+                        <img
+                          src={v.imageUrl}
+                          alt={`${v.make} ${v.model}`}
+                          className="w-12 h-12 object-cover rounded-lg border border-slate-800 shadow-sm"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 bg-slate-800 border border-slate-700/50 rounded-lg flex items-center justify-center text-[10px] text-slate-400 font-bold">
+                          No Img
+                        </div>
+                      )}
+                    </td>
                     <td className="px-6 py-4 font-bold text-white">
                       {v.make} {v.model}
                     </td>
@@ -284,6 +303,34 @@ export default function AdminPanel() {
                   <option value="Van">Van</option>
                 </select>
                 {errors.category && <span className="text-rose-400 text-[10px] font-bold mt-1 block">{errors.category}</span>}
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
+                  Vehicle Image
+                </label>
+                <input
+                  type="file"
+                  accept=".jpg,.jpeg,.png,.webp"
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                      setImageFile(file);
+                      setImagePreview(URL.createObjectURL(file));
+                    }
+                  }}
+                  className="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-slate-200 text-xs focus:outline-none focus:border-blue-500 file:mr-4 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500 transition-colors"
+                />
+                {imagePreview && (
+                  <div className="mt-4 flex items-center justify-center p-2 bg-slate-950 border border-slate-800 rounded-xl overflow-hidden max-h-48">
+                    <img
+                      src={imagePreview}
+                      alt="Preview"
+                      className="max-h-44 object-contain rounded-lg"
+                    />
+                  </div>
+                )}
+                {errors.image && <span className="text-rose-400 text-[10px] font-bold mt-1 block">{errors.image}</span>}
               </div>
 
               <div className="grid grid-cols-2 gap-4">

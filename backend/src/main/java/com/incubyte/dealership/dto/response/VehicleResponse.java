@@ -17,4 +17,5 @@ public class VehicleResponse {
     private String category;
     private Double price;
     private Integer quantity;
+    private String imageUrl;
 }

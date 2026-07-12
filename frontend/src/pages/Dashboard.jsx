@@ -80,9 +80,9 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row gap-8">
+    <div className="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row gap-12">
       <div className="w-full md:w-64 flex-shrink-0">
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 sticky top-24">
+        <div className="bg-[#1E293B] border border-slate-700 shadow-md rounded-xl p-6 sticky top-24">
           <h3 className="text-md font-bold text-white mb-4">Filter Inventory</h3>
           <form onSubmit={handleSearch} className="space-y-4">
             <div>
@@ -93,7 +93,7 @@ export default function Dashboard() {
                 type="text"
                 value={make}
                 onChange={(e) => setMake(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-lg text-slate-200 placeholder-slate-600 focus:outline-none transition-colors text-xs"
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 focus:border-blue-500 rounded-lg text-slate-200 placeholder-slate-600 focus:outline-none transition-colors text-xs"
                 placeholder="e.g. Toyota"
               />
             </div>
@@ -106,7 +106,7 @@ export default function Dashboard() {
                 type="text"
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-lg text-slate-200 placeholder-slate-600 focus:outline-none transition-colors text-xs"
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 focus:border-blue-500 rounded-lg text-slate-200 placeholder-slate-600 focus:outline-none transition-colors text-xs"
                 placeholder="e.g. Camry"
               />
             </div>
@@ -118,7 +118,7 @@ export default function Dashboard() {
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-lg text-slate-200 focus:outline-none transition-colors text-xs"
+                className="w-full px-3 py-2 bg-slate-900 border border-slate-700 focus:border-blue-500 rounded-lg text-slate-200 focus:outline-none transition-colors text-xs"
               >
                 <option value="">All Categories</option>
                 <option value="Sedan">Sedan</option>
@@ -140,7 +140,7 @@ export default function Dashboard() {
                   type="number"
                   value={minPrice}
                   onChange={(e) => setMinPrice(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-lg text-slate-200 focus:outline-none transition-colors text-xs"
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 focus:border-blue-500 rounded-lg text-slate-200 focus:outline-none transition-colors text-xs"
                   placeholder="0"
                 />
               </div>
@@ -152,7 +152,7 @@ export default function Dashboard() {
                   type="number"
                   value={maxPrice}
                   onChange={(e) => setMaxPrice(e.target.value)}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-lg text-slate-200 focus:outline-none transition-colors text-xs"
+                  className="w-full px-3 py-2 bg-slate-900 border border-slate-700 focus:border-blue-500 rounded-lg text-slate-200 focus:outline-none transition-colors text-xs"
                   placeholder="Max"
                 />
               </div>
@@ -164,7 +164,7 @@ export default function Dashboard() {
                 id="onlyInStock"
                 checked={onlyInStock}
                 onChange={(e) => setOnlyInStock(e.target.checked)}
-                className="rounded bg-slate-950 border-slate-800 text-blue-600 focus:ring-0 focus:ring-offset-0"
+                className="rounded bg-slate-900 border-slate-700 text-blue-600 focus:ring-0 focus:ring-offset-0"
               />
               <label htmlFor="onlyInStock" className="text-xs font-semibold text-slate-300 select-none">
                 In Stock Only
@@ -174,14 +174,14 @@ export default function Dashboard() {
             <div className="flex gap-2 pt-4">
               <button
                 type="submit"
-                className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg shadow-lg active:scale-95 transition-all shadow-blue-500/10"
+                className="flex-1 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
               >
                 Apply
               </button>
               <button
                 type="button"
                 onClick={handleClearFilters}
-                className="px-3 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-lg transition-colors"
+                className="px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-350 text-xs font-semibold rounded-lg border border-slate-700 transition-colors cursor-pointer"
               >
                 Clear
               </button>
@@ -193,52 +193,90 @@ export default function Dashboard() {
       <div className="flex-grow">
         {loading ? (
           <div className="flex items-center justify-center py-24">
-            <span className="w-8 h-8 border-4 border-slate-800 border-t-blue-500 rounded-full animate-spin"></span>
+            <span className="w-8 h-8 border-4 border-slate-850 border-t-blue-500 rounded-full animate-spin"></span>
           </div>
         ) : vehicles.length === 0 ? (
-          <div className="text-center py-24 border border-dashed border-slate-800 rounded-2xl bg-slate-900/20">
+          <div className="text-center py-24 border border-dashed border-slate-805 rounded-xl bg-slate-900/10">
             <p className="text-slate-400 text-sm">No vehicles found matching criteria.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {vehicles.map((v) => (
               <div
                 key={v.id}
-                className="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-2xl p-6 flex flex-col justify-between shadow-lg transition-all duration-300 hover:-translate-y-1 group"
+                className="bg-[#1A2332] hover:bg-[#202C3F] border border-slate-800 rounded-xl p-5 flex flex-col justify-between shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"
               >
                 <div>
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
+                  <div className="w-full h-[220px] bg-slate-950 rounded-lg overflow-hidden mb-4 border border-slate-850 flex items-center justify-center relative">
+                    {v.imageUrl ? (
+                      <img
+                        src={v.imageUrl}
+                        alt={`${v.make} ${v.model}`}
+                        className="w-full h-full object-cover rounded-lg"
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center gap-2 text-slate-600">
+                        <svg className="w-12 h-12 stroke-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600">No Image</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Category badge */}
+                  <div className="mb-2">
+                    <span className="inline-block text-[10px] font-bold text-blue-400 uppercase tracking-widest bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/20">
                       {v.category}
                     </span>
-                    <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${
+                  </div>
+
+                  {/* Vehicle Name */}
+                  <h4 className="text-lg font-bold text-slate-100 tracking-tight group-hover:text-blue-400 transition-colors mb-1">
+                    {v.make} {v.model}
+                  </h4>
+
+                  {/* Price */}
+                  <p className="text-2xl font-extrabold text-white tracking-tight mb-3">
+                    ${v.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </p>
+
+                  {/* Availability Badge */}
+                  <div>
+                    <span className={`inline-block text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${
                       v.quantity > 0 
-                        ? 'text-emerald-400 bg-emerald-500/10 border border-emerald-500/20' 
-                        : 'text-rose-400 bg-rose-500/10 border border-rose-500/20'
+                        ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20' 
+                        : 'text-rose-400 bg-rose-500/10 border-rose-500/20'
                     }`}>
                       {v.quantity > 0 ? `${v.quantity} Available` : 'Out of Stock'}
                     </span>
                   </div>
-                  <h4 className="text-lg font-bold text-white tracking-tight group-hover:text-blue-400 transition-colors">
-                    {v.make} {v.model}
-                  </h4>
-                  <p className="text-2xl font-black text-white mt-4 tracking-tight">
-                    ${v.price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                  </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-800/80">
-                  {v.quantity > 0 ? (
+                <div className="mt-4 pt-3 border-t border-slate-800">
+                  {user?.isAdmin ? (
+                    <div className="space-y-2">
+                      <button
+                        disabled
+                        className="w-full py-2 bg-slate-900 border border-slate-800 text-slate-500 text-xs font-bold rounded-lg cursor-not-allowed"
+                      >
+                        Purchase Disabled
+                      </button>
+                      <p className="text-[10px] text-slate-400 leading-normal text-center">
+                        Administrators manage inventory. Please use a customer account to purchase vehicles.
+                      </p>
+                    </div>
+                  ) : v.quantity > 0 ? (
                     <button
                       onClick={() => handlePurchase(v.id)}
-                      className="w-full py-2.5 bg-slate-800 hover:bg-blue-600 text-slate-200 hover:text-white text-xs font-bold rounded-xl active:scale-95 transition-all shadow-md flex items-center justify-center"
+                      className="w-full py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition-colors flex items-center justify-center cursor-pointer"
                     >
                       {user ? 'Purchase Now' : 'Log in to Purchase'}
                     </button>
                   ) : (
                     <button
                       disabled
-                      className="w-full py-2.5 bg-slate-950 border border-slate-900 text-slate-600 text-xs font-bold rounded-xl cursor-not-allowed"
+                      className="w-full py-2 bg-slate-900 border border-slate-800 text-slate-500 text-xs font-bold rounded-lg cursor-not-allowed"
                     >
                       Sold Out
                     </button>

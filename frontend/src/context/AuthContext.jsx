@@ -26,10 +26,12 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('dealership_token', token);
     const claims = parseJwt(token);
     if (claims) {
+      const claimRole = claims.role || claims.roles?.[0] || '';
+      const isAdmin = claimRole === 'ADMIN' || claimRole === 'ROLE_ADMIN' || (claims.roles || []).includes('ROLE_ADMIN');
       setUser({
         email: claims.sub,
-        roles: claims.roles || [],
-        isAdmin: (claims.roles || []).includes('ROLE_ADMIN'),
+        role: claimRole,
+        isAdmin: isAdmin,
       });
     }
   };
@@ -44,10 +46,12 @@ export const AuthProvider = ({ children }) => {
     if (token) {
       const claims = parseJwt(token);
       if (claims && claims.exp * 1000 > Date.now()) {
+        const claimRole = claims.role || claims.roles?.[0] || '';
+        const isAdmin = claimRole === 'ADMIN' || claimRole === 'ROLE_ADMIN' || (claims.roles || []).includes('ROLE_ADMIN');
         setUser({
           email: claims.sub,
-          roles: claims.roles || [],
-          isAdmin: (claims.roles || []).includes('ROLE_ADMIN'),
+          role: claimRole,
+          isAdmin: isAdmin,
         });
       } else {
         localStorage.removeItem('dealership_token');

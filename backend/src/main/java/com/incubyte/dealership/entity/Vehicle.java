@@ -26,4 +26,6 @@ public class Vehicle {
     private Double price;
 
     private Integer quantity;
+
+    private String imageUrl;
 }

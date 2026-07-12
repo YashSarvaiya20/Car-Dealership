@@ -4,6 +4,7 @@ import client from '../api/client';
 import Toast from '../components/Toast';
 
 export default function Register() {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -20,7 +21,7 @@ export default function Register() {
 
     setLoading(true);
     try {
-      await client.post('/api/auth/register', { email, password });
+      await client.post('/api/auth/register', { name, email, password });
       setToast({ message: 'Registration successful! Directing to login...', type: 'success' });
       setTimeout(() => {
         navigate('/login');
@@ -42,6 +43,20 @@ export default function Register() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          <div>
+            <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
+              Full Name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-3 bg-slate-950 border border-slate-800 focus:border-blue-500 rounded-xl text-slate-200 placeholder-slate-600 focus:outline-none transition-colors text-sm"
+              placeholder="John Doe"
+              required
+            />
+          </div>
+
           <div>
             <label className="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-2">
               Email Address
