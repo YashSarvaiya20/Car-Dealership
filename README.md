@@ -88,22 +88,23 @@ Car-Dealership/
 
 ## MongoDB Configuration
 
-The application is configured to connect to MongoDB using the `SPRING_DATA_MONGODB_URI` environment variable, falling back to local MongoDB by default:
-- **Local MongoDB**: `mongodb://localhost:27017/dealership`
-- **Atlas MongoDB**: Set the `SPRING_DATA_MONGODB_URI` environment variable to your connection string.
+The application is configured to run exclusively using **MongoDB Atlas** for database persistence. 
 
-### Running MongoDB Locally
-We have provided a Docker Compose setup for local development. To start the local MongoDB and Mongo Express dashboard:
-```bash
-docker compose up -d
-```
-- MongoDB URL: `mongodb://localhost:27017`
-- Mongo Express GUI: `http://localhost:8081`
+To configure your cloud database connection:
+1. Obtain your MongoDB Atlas connection string (containing your cluster coordinates, username, and password).
+2. Set the `SPRING_DATA_MONGODB_URI` environment variable:
+   ```powershell
+   $env:SPRING_DATA_MONGODB_URI="your-mongodb-atlas-connection-string"
+   ```
 
-To stop the services:
-```bash
-docker compose down
-```
+---
+
+## AI Tools Used
+
+The following AI tools were utilized during the development process of **DriveSphere**:
+- **ChatGPT**: Used for requirement clarification, visual design brainstorming, and business rule analysis.
+- **Claude AI**: Used for writing project development prompts and structuring core React component designs.
+- **Antigravity IDE**: Used as the primary agentic AI coding companion to build components, refine themes, run verification tests, and execute version control commits.
 
 ---
 
